@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLASSIFIED ARCHIVE DATABASE</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="home-page">
+    <div class="classified-stamp">CLASSIFIED</div>
+    
+    <div class="terminal-container">
+        <div class="terminal-screen">
+            <div class="terminal-header">
+                <span class="terminal-title">CLASSIFIED ARCHIVE SYSTEM v2.1</span>
+                <span class="terminal-buttons">
+                    <span class="btn-minimize">_</span>
+                    <span class="btn-maximize">□</span>
+                    <span class="btn-close">×</span>
+                </span>
+            </div>
+            
+            <div class="terminal-content">
+                <div class="terminal-line">
+                    <span class="prompt">$</span>
+                    <span class="terminal-text typing">CLASSIFIED ARCHIVE DATABASE</span>
+                </div>
+                
+                <div class="terminal-line">
+                    <span class="prompt">$</span>
+                    <span class="terminal-text typing" style="animation-delay: 0.5s">Intelligence Division – Declassified Records</span>
+                </div>
+                
+                <div class="seal-container">
+                    <div class="intelligence-seal">
+                        <div class="seal-outer">
+                            <div class="seal-inner">★</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="terminal-line" style="margin-top: 2rem;">
+                    <span class="prompt">$</span>
+                    <span class="terminal-text typing" style="animation-delay: 1s">ACCESS LEVEL: TOP SECRET</span>
+                </div>
+                
+                <div class="terminal-line">
+                    <span class="prompt">$</span>
+                    <span class="terminal-text typing" style="animation-delay: 1.5s">AUTHENTICATE TO PROCEED</span>
+                </div>
+                
+                <div class="login-section">
+                    <div class="login-field">
+                        <label for="username">USERNAME:</label>
+                        <input type="text" id="username" placeholder="Enter username..." class="terminal-input" autofocus>
+                    </div>
+                    
+                    <div class="login-field">
+                        <label for="password">PASSWORD:</label>
+                        <input type="password" id="password" placeholder="••••••••••••••••" class="terminal-input">
+                    </div>
+                    
+                    <button class="terminal-button" onclick="authenticate()">
+                        ▶ LOGIN
+                    </button>
+                    
+                    <button class="terminal-button" onclick="enterAsGuest()" style="margin-top: 0.5rem; background: transparent; color: var(--color-terminal-green); border-color: var(--color-terminal-green);">
+                        ▶ ENTER AS GUEST (READ-ONLY)
+                    </button>
+                </div>
+                
+                <div class="login-info">
+                    <p style="margin-top: 2rem; color: var(--color-text); font-size: 0.75rem;">
+                        <strong>ADMIN CREDENTIALS:</strong><br>
+                        Username: <span style="color: var(--color-terminal-green);">admin</span><br>
+                        Password: <span style="color: var(--color-terminal-green);">admin123</span>
+                    </p>
+                </div>
+                
+                <div class="cursor-blink">█</div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-disclaimer">
+        <p>This website is a fictional classified archive template.</p>
+    </footer>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-init.js"></script>
+    
+    <!-- Main Script -->
+    <script src="script.js"></script>
+</body>
+</html>
