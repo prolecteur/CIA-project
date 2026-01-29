@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dossier - Classified</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dossier-page">
+    <div class="classified-stamp">CLASSIFIED</div>
+    
+    <header class="dossier-header">
+        <div class="header-nav">
+            <button class="nav-button" onclick="window.location.href='archive.html'">← BACK TO ARCHIVE</button>
+        </div>
+        <div class="header-content">
+            <h1 id="dossierTitle">LOADING DOSSIER...</h1>
+        </div>
+    </header>
+    
+    <main class="dossier-main">
+        <section class="dossier-metadata">
+            <div class="metadata-grid">
+                <div class="metadata-item">
+                    <span class="metadata-label">DOSSIER CODE:</span>
+                    <span class="metadata-value" id="dossierCode">████████</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">CLASSIFICATION:</span>
+                    <span class="metadata-value" id="dossierClassification">TOP SECRET</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">DECLASSIFIED:</span>
+                    <span class="metadata-value" id="dossierDate">██-██-████</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">STATUS:</span>
+                    <span class="metadata-value" id="dossierStatus">ACTIVE</span>
+                </div>
+            </div>
+        </section>
+        
+        <section class="dossier-content">
+            <div class="document-viewer">
+                <div class="document-header">
+                    <h2>📄 DOCUMENT RECORDS</h2>
+                </div>
+                
+                <div class="documents-list" id="documentsList">
+                    <p style="color: var(--color-text); text-align: center; padding: 20px;">No documents added yet</p>
+                </div>
+            </div>
+            
+            <div class="gallery-section">
+                <div class="gallery-header">
+                    <h2>🖼️ EVIDENCE GALLERY</h2>
+                </div>
+                <div class="gallery-grid" id="galleryGrid">
+                    <p style="color: var(--color-text); grid-column: 1/-1; text-align: center; padding: 20px;">No images added yet</p>
+                </div>
+            </div>
+        </section>
+        
+        <div class="dossier-footer-section" id="adminButtons" style="display: none;">
+            <button class="edit-button" onclick="editDossier()">✎ EDIT DOSSIER</button>
+            <button class="delete-button" onclick="deleteDossierConfirm()">🗑️ DELETE DOSSIER</button>
+        </div>
+    </main>
+    
+    <footer class="footer-disclaimer">
+        <p>This website is a fictional classified archive template.</p>
+    </footer>
+    
+    <!-- Image Viewer Modal -->
+    <div id="imageViewerModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeImageViewer()">×</button>
+            <div class="modal-image-container">
+                <div class="image-placeholder-large" id="modalImageContainer">
+                    <span class="placeholder-icon-large">📷</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                console.log('Loading dossier page...');
+                loadDossierPage();
+                console.log('Dossier page loaded successfully');
+            } catch(e) {
+                console.error('Error loading dossier:', e);
+                console.error('Error stack:', e.stack);
+                alert('Error loading dossier. Redirecting to archive...');
+                window.location.href = 'archive.html';
+            }
+        });
+    </script>
+    
+    <!-- Firebase SDK (Compat versions for classic scripts) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-init.js"></script>
+    
+    <!-- Main Script -->
+    <script src="script.js"></script>
+</body>
+</html>

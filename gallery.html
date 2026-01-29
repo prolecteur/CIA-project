@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evidence Gallery - Classified</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="gallery-page">
+    <div class="classified-stamp">CLASSIFIED</div>
+    
+    <header class="gallery-header-main">
+        <div class="header-nav">
+            <button class="nav-button" onclick="window.location.href='archive.html'">← BACK TO ARCHIVE</button>
+        </div>
+        <div class="header-content">
+            <h1>🖼️ EVIDENCE GALLERY</h1>
+            <p>Visual Archive Database</p>
+        </div>
+    </header>
+    
+    <main class="gallery-main">
+        <section class="gallery-controls">
+            <input type="text" id="searchGallery" placeholder="SEARCH ARCHIVE CODE..." class="search-input">
+            <select id="filterGallery" class="filter-select">
+                <option value="">ALL CATEGORIES</option>
+                <option value="documents">DOCUMENTS</option>
+                <option value="surveillance">SURVEILLANCE</option>
+                <option value="forensic">FORENSIC</option>
+                <option value="other">OTHER</option>
+            </select>
+        </section>
+        
+        <section class="gallery-display">
+            <div class="gallery-grid-large" id="galleryContainerLarge">
+                <div class="gallery-item-large">
+                    <div class="gallery-item-placeholder">
+                        <span class="placeholder-icon">📷</span>
+                    </div>
+                    <div class="gallery-item-code">ARCHIVE ██████</div>
+                    <div class="gallery-item-date">DATE: ██-██-████</div>
+                    <button class="view-button" onclick="viewImage()">VIEW FULL</button>
+                </div>
+                
+                <div class="gallery-item-large">
+                    <div class="gallery-item-placeholder">
+                        <span class="placeholder-icon">📷</span>
+                    </div>
+                    <div class="gallery-item-code">ARCHIVE ██████</div>
+                    <div class="gallery-item-date">DATE: ██-██-████</div>
+                    <button class="view-button" onclick="viewImage()">VIEW FULL</button>
+                </div>
+                
+                <div class="gallery-item-large">
+                    <div class="gallery-item-placeholder">
+                        <span class="placeholder-icon">📷</span>
+                    </div>
+                    <div class="gallery-item-code">ARCHIVE ██████</div>
+                    <div class="gallery-item-date">DATE: ██-██-████</div>
+                    <button class="view-button" onclick="viewImage()">VIEW FULL</button>
+                </div>
+                
+                <div class="gallery-item-large">
+                    <div class="gallery-item-placeholder">
+                        <span class="placeholder-icon">📷</span>
+                    </div>
+                    <div class="gallery-item-code">ARCHIVE ██████</div>
+                    <div class="gallery-item-date">DATE: ██-██-████</div>
+                    <button class="view-button" onclick="viewImage()">VIEW FULL</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Full Screen Viewer Modal -->
+    <div id="imageViewerModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeImageViewer()">×</button>
+            <div class="modal-image-container">
+                <div class="image-placeholder-large">
+                    <span class="placeholder-icon-large">📷</span>
+                </div>
+            </div>
+            <div class="modal-info">
+                <p>ARCHIVE CODE: ██████████</p>
+                <p>CLASSIFICATION: TOP SECRET</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer-disclaimer">
+        <p>This website is a fictional classified archive template.</p>
+    </footer>
+    
+    <!-- Firebase SDK (Compat versions for classic scripts) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-init.js"></script>
+    
+    <!-- Main Script -->
+    <script src="script.js"></script>
+</body>
+</html>
