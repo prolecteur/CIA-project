@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Add Dossier</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-page">
+    <div class="classified-stamp">CLASSIFIED</div>
+    
+    <header class="admin-header">
+        <div class="header-nav">
+            <button class="nav-button" onclick="window.location.href='archive.html'">← BACK TO ARCHIVE</button>
+            <button class="nav-button" onclick="checkAdminAccess()" style="color: var(--color-terminal-red); border-color: var(--color-terminal-red);">🔒 VERIFY ADMIN</button>
+        </div>
+        <div class="header-content">
+            <h1>ADMIN PANEL</h1>
+            <p>Dossier Management System</p>
+        </div>
+    </header>
+    
+    <main class="admin-main">
+        <section class="admin-tabs">
+            <button class="tab-button active" onclick="switchTab('add-dossier')">➕ ADD DOSSIER</button>
+            <button class="tab-button" onclick="switchTab('add-document')">📄 ADD DOCUMENT</button>
+            <button class="tab-button" onclick="switchTab('add-image')">🖼️ ADD IMAGE</button>
+        </section>
+        
+        <!-- Add Dossier Tab -->
+        <section class="tab-content active" id="tab-add-dossier">
+            <h2>CREATE NEW DOSSIER</h2>
+            <form class="admin-form" id="addDossierForm">
+                <div class="form-group">
+                    <label for="dossierName">Dossier Name / Code:</label>
+                    <input type="text" id="dossierName" placeholder="e.g., DOSSIER DRACO" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="classificationLevel">Classification Level:</label>
+                    <select id="classificationLevel" required>
+                        <option value="TOP SECRET">TOP SECRET</option>
+                        <option value="SECRET">SECRET</option>
+                        <option value="CONFIDENTIAL">CONFIDENTIAL</option>
+                        <option value="DECLASSIFIED">DECLASSIFIED</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="declassifiedDate">Declassified Date:</label>
+                    <input type="date" id="declassifiedDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Status:</label>
+                    <select id="status" required>
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="ARCHIVED">ARCHIVED</option>
+                        <option value="UNDER REVIEW">UNDER REVIEW</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description / Summary:</label>
+                    <textarea id="description" rows="5" placeholder="Enter dossier summary..."></textarea>
+                </div>
+                
+                <button type="submit" class="form-button submit">▶ CREATE DOSSIER</button>
+            </form>
+        </section>
+        
+        <!-- Add Document Tab -->
+        <section class="tab-content" id="tab-add-document">
+            <h2>ADD DOCUMENT TO DOSSIER</h2>
+            
+            <div class="document-input-tabs">
+                <button class="doc-tab-button active" onclick="switchDocTab('manual')">📝 MANUAL INPUT</button>
+                <button class="doc-tab-button" onclick="switchDocTab('file')">📄 IMPORT FILE</button>
+            </div>
+            
+            <!-- Manual Input Tab -->
+            <form class="admin-form" id="addDocumentForm">
+                <div class="doc-input-section" id="manualInputSection">
+                    <div class="form-group">
+                        <label for="selectDossier">Select Dossier:</label>
+                        <select id="selectDossier" required>
+                            <option value="">-- Choose Dossier --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="documentCode">Document Code:</label>
+                        <input type="text" id="documentCode" placeholder="e.g., DOC-2026-001" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="documentContent">Document Content:</label>
+                        <textarea id="documentContent" rows="8" placeholder="Paste or enter document text..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="documentDate">Date:</label>
+                        <input type="date" id="documentDate" required>
+                    </div>
+                    
+                    <button type="submit" class="form-button submit">▶ ADD DOCUMENT</button>
+                </div>
+            </form>
+            
+            <!-- File Import Tab -->
+            <form class="admin-form" id="addDocumentFileForm">
+                <div class="doc-input-section" id="fileInputSection" style="display: none;">
+                    <div class="form-group">
+                        <label for="selectDossierFile">Select Dossier:</label>
+                        <select id="selectDossierFile" required>
+                            <option value="">-- Choose Dossier --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="documentFile">📁 Upload File (TXT, PDF, DOC, etc):</label>
+                        <input type="file" id="documentFile" accept=".txt,.pdf,.doc,.docx,.jpg,.png,.jpeg" multiple required>
+                        <span class="file-hint">Supported: TXT, PDF, DOC, DOCX, JPG, PNG</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="documentCodeFile">Document Code (optional):</label>
+                        <input type="text" id="documentCodeFile" placeholder="Auto-generated from filename if empty">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="documentDateFile">Date:</label>
+                        <input type="date" id="documentDateFile" required>
+                    </div>
+                    
+                    <button type="submit" class="form-button submit">▶ IMPORT DOCUMENT</button>
+                </div>
+            </form>
+        </section>
+        
+        <!-- Add Image Tab -->
+        <section class="tab-content" id="tab-add-image">
+            <h2>ADD IMAGE TO GALLERY</h2>
+            <form class="admin-form" id="addImageForm">
+                <div class="form-group">
+                    <label for="selectDossierImage">Select Dossier:</label>
+                    <select id="selectDossierImage" required>
+                        <option value="">-- Choose Dossier --</option>
+                        <option value="template">TEMPLATE DOSSIER</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="imageCode">Image Archive Code:</label>
+                    <input type="text" id="imageCode" placeholder="e.g., IMG-2026-001" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="imageCategory">Category:</label>
+                    <select id="imageCategory" required>
+                        <option value="documents">DOCUMENTS</option>
+                        <option value="surveillance">SURVEILLANCE</option>
+                        <option value="forensic">FORENSIC</option>
+                        <option value="other">OTHER</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="imageFile">Upload Image:</label>
+                    <input type="file" id="imageFile" accept="image/*" multiple required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="imageDate">Date:</label>
+                    <input type="date" id="imageDate" required>
+                </div>
+                
+                <button type="submit" class="form-button submit">▶ ADD IMAGE</button>
+            </form>
+        </section>
+        
+        <section class="admin-info">
+            <div class="info-box">
+                <h3>ℹ️ INSTRUCTIONS</h3>
+                <ul>
+                    <li>Create dossiers using the "ADD DOSSIER" tab</li>
+                    <li>Add documents to dossiers using the "ADD DOCUMENT" tab</li>
+                    <li>Upload images to the gallery using the "ADD IMAGE" tab</li>
+                    <li>All content is stored locally in your browser</li>
+                    <li>Export your data regularly to prevent loss</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="footer-disclaimer">
+        <p>This website is a fictional classified archive template.</p>
+    </footer>
+    
+    <!-- Firebase SDK (Compat versions for classic scripts) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-init.js"></script>
+    
+    <!-- Main Script -->
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Ensure local storage is initialized before populating dropdowns
+            try {
+                if (typeof initializeStorage === 'function') initializeStorage();
+            } catch(e) {
+                console.warn('initializeStorage not available yet:', e);
+            }
+
+            verifyAdminAccess();
+            // loadDossierDropdowns is async
+            try {
+                await loadDossierDropdowns();
+            } catch(e) {
+                console.error('Error loading dossier dropdowns:', e);
+            }
+        });
+    </script>
+</body>
+</html>
