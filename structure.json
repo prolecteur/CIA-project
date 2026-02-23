@@ -1,0 +1,15 @@
+[
+    {
+        "folderName": "PROJECT_X_RAY",
+        "files": [
+            {"name": "Report_01.pdf", "url": "dossiers/report1.pdf"},
+            {"name": "Evidence_Photo.jpg", "url": "dossiers/photo.jpg"}
+        ]
+    },
+    {
+        "folderName": "TOP_SECRET_FILES",
+        "files": [
+            {"name": "Deep_Sea_Base.pdf", "url": "dossiers/base.pdf"}
+        ]
+    }
+]

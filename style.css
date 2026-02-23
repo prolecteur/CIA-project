@@ -1,0 +1,75 @@
+body {
+    background-color: #050505;
+    color: #e0e0e0;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    overflow: hidden;
+}
+
+.container {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; height: 100vh;
+}
+
+/* Grille de dossiers façon bureau d'ordinateur */
+#folder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 120px);
+    gap: 30px;
+    padding: 40px;
+    width: 90%;
+}
+
+.folder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid transparent;
+}
+
+.folder:hover { background: rgba(255, 255, 255, 0.05); border: 1px solid #333; }
+
+/* Icône de dossier en pur CSS */
+.folder-icon {
+    width: 60px; height: 45px;
+    background-color: #d4af37; /* Jaune dossier */
+    border-radius: 0 5px 5px 5px;
+    position: relative;
+    margin-bottom: 10px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+.folder-icon::before {
+    content: ''; width: 25px; height: 10px;
+    background-color: #d4af37;
+    position: absolute; top: -10px; left: 0;
+    border-radius: 5px 5px 0 0;
+}
+
+/* Fenêtre de contenu du dossier (Pop-up) */
+#folder-modal {
+    display: none;
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 400px;
+    background: #111; border: 2px solid #0051ff;
+    z-index: 100; box-shadow: 0 0 30px rgba(0, 81, 255, 0.3);
+}
+
+.modal-header {
+    background: #0051ff; padding: 10px;
+    display: flex; justify-content: space-between;
+}
+
+.file-row {
+    display: flex; justify-content: space-between;
+    padding: 15px; border-bottom: 1px solid #222;
+}
+
+.read-btn {
+    background: white; color: black;
+    padding: 5px 15px; text-decoration: none; font-weight: bold;
+}
