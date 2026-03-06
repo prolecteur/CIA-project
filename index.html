@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIA | INTERNAL ARCHIVES</title>
+    <style>
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            transition: filter 0.3s, transform 0.5s;
+        }
+
+        /* Effet CRT */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 2000;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        #radar-bg { position: fixed; bottom: -100px; right: -100px; width: 400px; height: 400px; border: 1px solid #0051ff; border-radius: 50%; opacity: 0.05; animation: pulse 4s infinite; pointer-events: none; }
+        @keyframes pulse { 0% { transform: scale(0.5); opacity: 0.1; } 100% { transform: scale(1.2); opacity: 0; } }
+
+        #boot-console { padding: 40px; color: #00ff41; font-size: 1.1rem; line-height: 1.5; display: block; }
+
+        #login-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .shake { animation: shake 0.3s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+
+        #welcome-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            background: radial-gradient(circle, #001a33 0%, #050505 100%);
+        }
+
+        .welcome-text {
+            font-size: 2rem;
+            letter-spacing: 8px;
+            color: #00ff41;
+            margin-bottom: 10px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
+            filter: grayscale(100%) brightness(1.5);
+        }
+
+        input[type="password"] {
+            background: #000;
+            border: 1px solid #333;
+            color: #00ff41;
+            padding: 15px;
+            width: 300px;
+            text-align: center;
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            outline: none;
+        }
+
+        button {
+            background: #111;
+            color: #fff;
+            border: 1px solid #fff;
+            padding: 10px 30px;
+            margin-top: 20px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        button:hover { background: #fff; color: #000; }
+
+        .top-bar { position: fixed; top: 0; width: 100%; background: rgba(255,255,255,0.05); padding: 5px 20px; font-size: 10px; color: #555; display: flex; justify-content: space-between; border-bottom: 1px solid #222; z-index: 10; box-sizing: border-box; }
+
+        #desktop {
+            display: none;
+            padding: 60px 40px 40px 40px;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 25px;
+            height: 100vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .folder {
+            display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; transition: 0.2s; user-select: none;
+            padding: 10px;
+        }
+
+        .folder:hover { background: rgba(0, 81, 255, 0.1); border: 1px solid #0051ff; border-radius: 5px; transform: scale(1.05); }
+
+        .folder-icon {
+            width: 50px; height: 38px;
+            background: #e3b02a; border-radius: 0 5px 5px 5px;
+            position: relative; margin-bottom: 10px;
+            box-shadow: 2px 2px 0px #8a6d0a;
+        }
+
+        .folder-icon::before {
+            content: ''; width: 20px; height: 8px;
+            background: #e3b02a; position: absolute; top: -8px; left: 0;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .folder-name { font-size: 0.65rem; text-transform: uppercase; text-align: center; color: #aaa; transition: background 0.2s; }
+
+        /* Effet de censure Redacted */
+        .redacted .folder-name { background: #fff; color: #fff !important; }
+
+        #window {
+            display: none;
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%; height: 60%;
+            background: #0a0a0a; border: 2px solid #0051ff;
+            z-index: 3000;
+            box-shadow: 0 0 50px black;
+        }
+
+        .window-header {
+            background: #0051ff; padding: 10px;
+            display: flex; justify-content: space-between;
+            color: white; font-weight: bold;
+        }
+
+        .close-btn { background: #000; color: white; border: 1px solid white; cursor: pointer; }
+
+        #file-list { padding: 20px; }
+
+        .file-item {
+            display: flex; justify-content: space-between;
+            padding: 10px; border-bottom: 1px solid #1a1a1a;
+        }
+
+        .read-link { background: #00ff41; color: black; text-decoration: none; padding: 5px 15px; font-size: 0.7rem; font-weight: bold; }
+
+        /* Breach Screen */
+        #breach-screen {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 5000; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+        #map { width: 70%; opacity: 0.2; filter: invert(1) sepia(100%) saturate(10000%) hue-rotate(320deg); position: absolute; }
+        .breach-content { position: relative; z-index: 5001; padding: 20px; }
+        .terror-text { color: #ff0000; font-size: 1.2rem; font-weight: bold; max-width: 800px; line-height: 1.6; }
+        .loading-translation { width: 300px; height: 4px; background: #222; margin: 20px auto; display: none; }
+        .loading-bar { width: 0%; height: 100%; background: #ff0000; }
+        
+        #lock-final {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 6000; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        /* Overlay d'alerte mystérieuse */
+        #spooky-overlay {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8); z-index: 8000; justify-content: center; align-items: center;
+            color: red; font-size: 3rem; font-weight: bold; text-align: center; pointer-events: none;
+        }
+
+        /* Hidden Input Zone */
+        #hidden-trigger-zone {
+            position: fixed; bottom: 10px; right: 15px; z-index: 9999;
+            display: flex; align-items: center;
+        }
+        #ghost-input {
+            width: 30px; background: transparent; border: none; color: transparent; outline: none; caret-color: transparent; cursor: text;
+        }
+        .delim { color: #ffffff; font-weight: bold; font-size: 18px; text-shadow: 0 0 5px #fff; user-select: none; }
+    </style>
+</head>
+<body>
+
+    <div id="spooky-overlay"></div>
+
+    <div class="top-bar">
+        <span>UPLINK: ACTIVE</span>
+        <span id="top-timer">LANGLEY: 00:00:00</span>
+        <span>75 FILES TRACKED | CPU: 42°C</span>
+    </div>
+
+    <div id="radar-bg"></div>
+    <div id="boot-console"></div>
+
+    <div id="login-screen">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg" class="logo">
+        <h2 style="letter-spacing: 5px;">INTERNAL DATABASE ACCESS</h2>
+        <input type="password" id="access-code" maxlength="10" placeholder="----------">
+        <br>
+        <button onclick="login()">AUTHORIZE SYSTEM</button>
+        <p id="error" style="color: red; display: none; margin-top: 20px;">INVALID SYSTEM KEY</p>
+    </div>
+
+    <div id="welcome-screen">
+        <h1 class="welcome-text">ACCESS GRANTED</h1>
+        <hr style="width: 50%; border: 1px solid #00ff41;">
+        <h3 style="letter-spacing: 3px;">WELCOME BACK</h3>
+        <h2 style="color: #fff; font-size: 1.8rem;">DIRECTOR JONATHAN REED</h2>
+        <p style="color: #666;">RANK: SPECIAL AGENT IN CHARGE (LEVEL 5)</p>
+    </div>
+
+    <div id="desktop"></div>
+
+    <div id="window">
+        <div class="window-header">
+            <span id="window-title"></span>
+            <button class="close-btn" onclick="closeWindow()">X</button>
+        </div>
+        <div id="file-list"></div>
+    </div>
+
+    <div id="breach-screen">
+        <img id="map" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg">
+        <div class="breach-content">
+            <div id="status" style="color:#ff0000; margin-bottom: 20px; font-size: 0.8rem;">[ SIGNAL TRACED - COORDINATES LOCKED ]</div>
+            <div id="msg" class="terror-text"></div>
+            <div id="loader-box" class="loading-translation"><div id="bar" class="loading-bar"></div></div>
+        </div>
+    </div>
+
+    <div id="lock-final">
+        <div style="font-size: 150px; filter: drop-shadow(0 0 20px red);">🔒</div>
+        <h1 style="color:red; letter-spacing: 10px;">LOCKED</h1>
+        <p style="color:#333;">SECURITY BREACH REGISTERED</p>
+    </div>
+
+    <div id="hidden-trigger-zone">
+        <span class="delim">.</span>
+        <input type="text" id="ghost-input" autocomplete="off" maxlength="5">
+        <span class="delim">.</span>
+    </div>
+
+    <script>
+        const SYSTEM_CODE = "4920318576"; 
+        const BREACH_CODE = "11587";
+
+        const myData = [
+            { folderName: "DRACO", code: "24041", files: [
+                { name: "Draco first observation.pdf", url: "dossier/Draco first observation.pdf" },
+                { name: "Draco Krakatoa anomalous.pdf", url: "dossier/Draco Krakatoa anomalous.pdf" },
+                { name: "Draco tchernobyl Cataclysme.pdf", url: "dossier/Draco tchernobyl Cataclysme.pdf" },
+                { name: "Draco Origins.pdf", url: "dossier/Draco Origins.pdf" }
+            ]},
+            { folderName: "PROJECT_MOTHMAN", code: "88210", files: [] },
+            { folderName: "AREA_51_LOGS", code: "51515", files: [] },
+            { folderName: "KRAKEN_BIO", code: "00992", files: [] },
+            { folderName: "BIGFOOT_DNA", code: "77431", files: [] },
+            { folderName: "JFK_SECRET", code: "19630", files: [] },
+            { folderName: "TESLA_FILES", code: "36936", files: [] },
+            { folderName: "MK_ULTRA_2", code: "10102", files: [] },
+            { folderName: "MOON_BASE", code: "66021", files: [] },
+            { folderName: "ZODIAC_REAL", code: "01342", files: [] },
+            { folderName: "SIREN_SONG", code: "44219", files: [] },
+            { folderName: "BERMUDA_TRI", code: "33901", files: [] },
+            { folderName: "CHUPACABRA", code: "22817", files: [] },
+            { folderName: "ROSWELL_47", code: "47474", files: [] },
+            { folderName: "LOCH_NESS", code: "55210", files: [] },
+            { folderName: "ILLUMINATI", code: "66601", files: [] },
+            { folderName: "CYBER_GHOST", code: "90012", files: [] },
+            { folderName: "ORION_BELT", code: "88273", files: [] },
+            { folderName: "ATLANTIS_LOC", code: "74412", files: [] },
+            { folderName: "LEVIATHAN", code: "11092", files: [] },
+            { folderName: "SKINWALKER", code: "33109", files: [] },
+            { folderName: "WENDIGO_OBS", code: "44921", files: [] },
+            { folderName: "JERSEY_DEV", code: "55821", files: [] },
+            { folderName: "MOTHMAN_WV", code: "66210", files: [] },
+            { folderName: "POLYBIUS_ARC", code: "77321", files: [] },
+            { folderName: "TUNGUSKA_EXP", code: "88432", files: [] },
+            { folderName: "MONTAUK_PRJ", code: "99102", files: [] },
+            { folderName: "PHILADEL_EXP", code: "11203", files: [] },
+            { folderName: "HAARP_CONTROL", code: "22314", files: [] },
+            { folderName: "CROP_CIRCLES", code: "33425", files: [] },
+            { folderName: "BLACK_KNIGHT", code: "44536", files: [] },
+            { folderName: "MEN_IN_BLACK", code: "55647", files: [] },
+            { folderName: "HOLLOW_EARTH", code: "66758", files: [] },
+            { folderName: "NANOBOTS_Z", code: "77869", files: [] },
+            { folderName: "AI_SENTIENCE", code: "88970", files: [] },
+            { folderName: "COLD_FUSION", code: "99081", files: [] },
+            { folderName: "TELEPORT_V3", code: "11192", files: [] },
+            { folderName: "MARS_COLONY", code: "22203", files: [] },
+            { folderName: "TIME_TRAVEL_X", code: "33314", files: [] },
+            { folderName: "EL_CHOP_INTEL", code: "44425", files: [] },
+            { folderName: "PABLO_REMAINS", code: "55536", files: [] },
+            { folderName: "O_BIN_LADEN", code: "66647", files: [] },
+            { folderName: "JACK_RIPPER", code: "77758", files: [] },
+            { folderName: "DYATLOV_PASS", code: "88869", files: [] },
+            { folderName: "VOYNICH_MSS", code: "99970", files: [] },
+            { folderName: "AMITYVILLE_T", code: "12312", files: [] },
+            { folderName: "ANTARCTIC_W", code: "23423", files: [] },
+            { folderName: "VATICAN_SEC", code: "34534", files: [] },
+            { folderName: "911_UNREDACT", code: "45645", files: [] },
+            { folderName: "APOLLO_18", code: "56756", files: [] },
+            { folderName: "BOHEMIAN_GR", code: "67867", files: [] },
+            { folderName: "S_B_SOCIETY", code: "78978", files: [] },
+            { folderName: "FREE_ENERGY", code: "89089", files: [] },
+            { folderName: "GMO_HUMAN_V", code: "90190", files: [] },
+            { folderName: "ZOMBIE_VIRUS", code: "10201", files: [] },
+            { folderName: "CYBORG_PROG", code: "20302", files: [] },
+            { folderName: "GHOST_SHELL", code: "30403", files: [] },
+            { folderName: "UFO_BRAZIL", code: "40504", files: [] },
+            { folderName: "RED_MERCURY", code: "50605", files: [] },
+            { folderName: "VALIANT_THOR", code: "60706", files: [] },
+            { folderName: "SERPO_PRJ", code: "70807", files: [] },
+            { folderName: "SOLAR_WARDEN", code: "80908", files: [] },
+            { folderName: "DEATH_STAR_X", code: "90109", files: [] },
+            { folderName: "TITANIC_CONSP", code: "11223", files: [] },
+            { folderName: "BLUE_BEAM", code: "33445", files: [] },
+            { folderName: "FEMA_CAMPS", code: "55667", files: [] },
+            { folderName: "DENVER_APT_S", code: "77889", files: [] },
+            { folderName: "VLAD_IMPALER", code: "99001", files: [] },
+            { folderName: "RASPUTIN_DNA", code: "12567", files: [] },
+            { folderName: "HITLER_S_AMER", code: "87654", files: [] },
+            { folderName: "NEPHILIM_SKE", code: "54321", files: [] },
+            { folderName: "GRYPHON_SIGHT", code: "98765", files: [] },
+            { folderName: "MINOTAUR_LAB", code: "13579", files: [] },
+            { folderName: "PEGASUS_WINGS", code: "24680", files: [] },
+            { folderName: "YETI_FOOTAGE", code: "11221", files: [] }
+        ];
+
+        // GESTION DES ÉVÉNEMENTS
+        const ghostInput = document.getElementById('ghost-input');
+        const disturbances = {
+            "22904": "glitch",
+            "77403": "invert",
+            "12121": "scan",
+            "99205": "mirror",
+            // Nouveaux codes inquiétants
+            "66666": "stalker",
+            "10902": "whisper",
+            "00001": "override",
+            "33333": "redacted",
+            "91919": "localize"
+        };
+
+        ghostInput.addEventListener('input', (e) => {
+            const val = e.target.value;
+            if (val === BREACH_CODE) { triggerBreach(); e.target.value = ""; } 
+            else if (val.length === 5) {
+                if (disturbances[val]) applyEffect(disturbances[val]);
+                e.target.value = "";
+            }
+        });
+
+        function applyEffect(type) {
+            const b = document.body;
+            const spooky = document.getElementById('spooky-overlay');
+
+            if(type === "glitch") {
+                b.style.filter = "hue-rotate(90deg) contrast(1.5)";
+                setTimeout(() => b.style.filter = "", 2000);
+            } 
+            else if(type === "invert") {
+                b.style.filter = "invert(1)";
+                setTimeout(() => b.style.filter = "", 5000);
+            } 
+            else if(type === "scan") {
+                let s = document.createElement('div');
+                s.style = "position:fixed;top:0;left:0;width:100%;height:3px;background:red;z-index:10000;animation:sLine 2s linear;";
+                s.innerHTML = "<style>@keyframes sLine{0%{top:0}100%{top:100%}}</style>";
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 2000);
+            } 
+            else if(type === "mirror") {
+                b.style.transform = "scaleX(-1)";
+                setTimeout(() => b.style.transform = "", 5000);
+            }
+            // EFFETS MYSTÉRIEUX
+            else if(type === "stalker") {
+                spooky.style.display = "flex";
+                spooky.innerText = "WE SEE YOU THROUGH THE LENS";
+                setTimeout(() => { spooky.style.display = "none"; }, 1500);
+            }
+            else if(type === "whisper") {
+                let flash = setInterval(() => {
+                    b.style.background = (b.style.background === "red") ? "black" : "red";
+                }, 100);
+                setTimeout(() => { clearInterval(flash); b.style.background = "#050505"; }, 2000);
+            }
+            else if(type === "override") {
+                let shakeCount = 0;
+                let sh = setInterval(() => {
+                    b.style.transform = `translate(${Math.random()*20-10}px, ${Math.random()*20-10}px)`;
+                    shakeCount++;
+                    if(shakeCount > 20) { clearInterval(sh); b.style.transform = ""; }
+                }, 50);
+            }
+            else if(type === "redacted") {
+                b.classList.add('redacted');
+                setTimeout(() => b.classList.remove('redacted'), 4000);
+            }
+            else if(type === "localize") {
+                alert("TRACE DETECTED: 192.168.1.42\nLAT: 48.8584 / LONG: 2.2945\nSTATUS: EN ROUTE");
+            }
+        }
+
+        // LOGIQUE SYSTÈME
+        let lineIndex = 0;
+        function typeBoot() {
+            const console = document.getElementById('boot-console');
+            const lines = ["> INITIALIZING...", "> SECURE CONNECTION...", "> ENCRYPTION: AES-256...", "> IDENTITY VERIFIED...", "> READY."];
+            if (lineIndex < lines.length) {
+                console.innerHTML += lines[lineIndex] + "<br>";
+                lineIndex++;
+                setTimeout(typeBoot, 500);
+            } else {
+                setTimeout(() => { console.style.display = 'none'; document.getElementById('login-screen').style.display = 'flex'; }, 1000);
+            }
+        }
+        window.onload = typeBoot;
+
+        function login() {
+            const input = document.getElementById('access-code');
+            if (input.value === SYSTEM_CODE) { document.getElementById('login-screen').style.display = 'none'; showWelcome(); } 
+            else { document.getElementById('login-screen').classList.add('shake'); document.getElementById('error').style.display = 'block'; setTimeout(() => document.getElementById('login-screen').classList.remove('shake'), 300); }
+        }
+
+        function showWelcome() {
+            const welcome = document.getElementById('welcome-screen');
+            welcome.style.display = 'flex';
+            setTimeout(() => { welcome.style.display = 'none'; document.getElementById('desktop').style.display = 'grid'; renderFolders(); }, 3500);
+        }
+
+        function renderFolders() {
+            const desktop = document.getElementById('desktop');
+            desktop.innerHTML = "";
+            myData.forEach((folder, index) => {
+                const div = document.createElement('div');
+                div.className = "folder";
+                div.ondblclick = () => tryOpenFolder(index);
+                div.innerHTML = `<div class="folder-icon"></div><div class="folder-name">${folder.folderName}</div>`;
+                desktop.appendChild(div);
+            });
+        }
+
+        function tryOpenFolder(index) {
+            const folder = myData[index];
+            const codeInput = prompt(`SECURITY ACCESS // ENTER 5-DIGIT KEY FOR [${folder.folderName}]`);
+            if (codeInput === BREACH_CODE) triggerBreach();
+            else if (codeInput === folder.code) openFolder(index);
+            else if (codeInput !== null) alert("ACCESS DENIED");
+        }
+
+        function triggerBreach() {
+            document.getElementById('desktop').style.display = 'none';
+            document.getElementById('window').style.display = 'none';
+            const screen = document.getElementById('breach-screen');
+            const msg = document.getElementById('msg');
+            screen.style.display = 'flex';
+            msg.innerText = "CRITICAL ERROR: UNAUTHORIZED SNOOPING DETECTED. WE ARE SCANNING YOUR ADDRESS. DO NOT TURN OFF THE DEVICE.";
+            setTimeout(() => {
+                document.getElementById('status').innerText = "[ TRANSLATING PROTOCOL... ]";
+                document.getElementById('loader-box').style.display = 'block';
+                let w = 0;
+                let itv = setInterval(() => { w += 2; document.getElementById('bar').style.width = w + "%"; if(w >= 100) clearInterval(itv); }, 100);
+                setTimeout(() => {
+                    msg.innerText = "ERREUR CRITIQUE : FOUILLE NON AUTORISÉE DÉTECTÉE. VOTRE POSITION EST VERROUILLÉE. UNE UNITÉ D'INTERVENTION EST EN ROUTE VERS VOTRE DOMICILE.";
+                    setTimeout(() => { screen.style.display = 'none'; document.getElementById('lock-final').style.display = 'flex'; }, 6000);
+                }, 6000);
+            }, 6000);
+        }
+
+        function openFolder(index) {
+            const folder = myData[index];
+            document.getElementById('window-title').innerText = "ARCHIVE: " + folder.folderName;
+            const list = document.getElementById('file-list');
+            list.innerHTML = "";
+            if(folder.files.length === 0) list.innerHTML = "<p style='color:#555'>FILE NOT FOUND</p>";
+            folder.files.forEach(file => {
+                list.innerHTML += `<div class="file-item"><span>📄 ${file.name}</span><a href="${file.url}" target="_blank" class="read-link">DECRYPT</a></div>`;
+            });
+            document.getElementById('window').style.display = 'block';
+        }
+
+        function closeWindow() { document.getElementById('window').style.display = 'none'; }
+
+        setInterval(() => { document.getElementById('top-timer').innerText = "LANGLEY: " + new Date().toLocaleTimeString(); }, 1000);
+    </script>
+</body>
+</html>
